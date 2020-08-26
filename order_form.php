@@ -10,32 +10,21 @@ session_start();
 <body>
   <?php
   $f_name_error = $l_name_error = $email_error = $p_name_error = $imslp_error = $musicfile_error = $tune_note_error = $tempo_error = $bpm_error = $custom_error = $note_type_error = $recording_error = "";
-  $order_num = $full_name = $first_name = $last_name = $email = $piece_name = $imslp = $music_file = $tuning_note = $tempo =  $bpm = $custom_bpm = $custom_file = $note_type = $recording = $questions = "";
+  $order_num = $name = $email = $piece_name = $imslp = $music_file = $tuning_note = $tempo =  $bpm = $custom_bpm = $custom_file = $note_type = $recording = $questions = "";
 
 
   //$city = mysqli_real_escape_string($link, $city);
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    if (empty($_POST["first_name"])){
-      $f_name_error .= "Your first name is required. <br/>";
+    if (empty($_POST["name"])){
+      $f_name_error .= "Your name is required. <br/>";
     }
     else {
-      $first_name = test_input($_POST['first_name']);
-      if (!preg_match("/^[a-zA-Z ]*$/",$first_name)) {
-        $f_name_error .= "Your first name is only letters and white space allowed.  <br/>";
+      $name = test_input($_POST['name']);
+      if (!preg_match("/^[a-zA-Z ]*$/",$name)) {
+        $f_name_error .= "Your name is only letters and white space allowed.  <br/>";
       }
-      $first_name = $conn->real_escape_string($first_name);
-    }
-
-    if (empty($_POST["last_name"])){
-      $l_name_error .= "Your last name is required. <br/>";
-    }
-    else {
-      $last_name = test_input($_POST['last_name']);
-      if (!preg_match("/^[a-zA-Z ]*$/",$last_name)) {
-        $l_name_error .= "Your last name is only letters and white space allowed.  <br/>";
-      }
-      $last_name = $conn->real_escape_string($last_name);
+      $name = $conn->real_escape_string($name);
     }
 
     if (empty($_POST["email"])){
@@ -196,17 +185,16 @@ session_start();
     if (has_no_error_messages($error_array)) {
 
       $order_num = mt_rand(1000000,mt_getrandmax());
-      $full_name = $first_name . " " . $last_name;
       $status_msg = "Status1";
 
       $sql = "INSERT INTO Users (StatusMsg, OrderNumber, FullName, Email, PieceName, IMSLP, MusicFile, TuningNote, Tempo, BPM, CustomBPM, CustomFile, NoteType, Recording, Questions)
-      SELECT '$status_msg', '$order_num', '$full_name', '$email', '$piece_name', '$imslp', '$music_file', '$tuning_note', '$tempo', '$bpm', '$custom_bpm', '$custom_file', '$note_type', '$recording', '$questions'
+      SELECT '$status_msg', '$order_num', '$name', '$email', '$piece_name', '$imslp', '$music_file', '$tuning_note', '$tempo', '$bpm', '$custom_bpm', '$custom_file', '$note_type', '$recording', '$questions'
       FROM DUAL
       WHERE NOT EXISTS (SELECT * FROM Users WHERE OrderNumber=$order_num ) LIMIT 1;";
 
       if ($conn->query($sql)) {
         $_SESSION["order"] = $order_num;
-        $body = '<p>Hi, ' . $full_name . ' </p><br><p> This is your order number: <b> ' . $order_num . '</b>.</p><br>'.
+        $body = '<p>Hi, ' . $name . ' </p><br><p> This is your order number: <b> ' . $order_num . '</b>.</p><br>'.
         '<h4>Order Summary</h4>'.
         '<p>Name of Piece: <span></span>' . $piece_name . '</p>'.
         '<p>Tuning Note: <span></span>' . $tuning_note . '</p>'.
@@ -280,10 +268,8 @@ session_start();
           </div>
         </legend>
         <div class="">
-          <label for="first_name">First Name: <span class="form-error"><?php echo $f_name_error;?> </span></label>
-          <input type="text" name="first_name" id="first_name" class="input-1-2" value="<?php echo stripslashes($first_name);?>">
-          <label for="last_name">Last Name:<span class="form-error"><?php echo $l_name_error;?> </span></label>
-          <input type="text" name="last_name" id="last_name" class="input-1-2" value="<?php echo stripslashes($last_name);?>">
+          <label for="name">Name: <span class="form-error"><?php echo $f_name_error;?> </span></label>
+          <input type="text" name="name" id="name" class="input-1-2" value="<?php echo stripslashes($name);?>">
         </div>
         <div class="">
           <label for="email">Email:<span class="form-error"><?php echo $email_error;?> </span></label>
